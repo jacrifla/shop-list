@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import InputField from './InputField';
+import SubmitButton from './SubmitButton';
 
 function RegistrationForm() {
   const [name, setName] = useState('');
@@ -59,53 +61,35 @@ function RegistrationForm() {
           {success}
         </div>
       )}
-      <div className="mb-4">
-        <input
-          type="text"
-          placeholder="Nome"
-          value={name || ''} // Garante que o valor nunca será undefined
-          onChange={(e) => setName(e.target.value)}
-          required
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="email"
-          placeholder="Email"
-          value={email || ''} // Garante que o valor nunca será undefined
-          onChange={(e) => setEmail(e.target.value)}
-          required
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="password"
-          placeholder="Senha"
-          value={password || ''} // Garante que o valor nunca será undefined
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <div className="mb-4">
-        <input
-          type="password"
-          placeholder="Confirmar Senha"
-          value={confirmPassword || ''} // Garante que o valor nunca será undefined
-          onChange={(e) => setConfirmPassword(e.target.value)}
-          required
-          className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      </div>
-      <button
-        type="submit"
-        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200"
-        disabled={loading}
-      >
-        {loading ? 'Carregando...' : 'Cadastrar'}
-      </button>
+      <InputField
+        type="text"
+        placeholder="Nome"
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        required
+      />
+      <InputField
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+      />
+      <InputField
+        type="password"
+        placeholder="Senha"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+      />
+      <InputField
+        type="password"
+        placeholder="Confirmar Senha"
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
+        required
+      />
+      <SubmitButton loading={loading}>Cadastrar</SubmitButton>
       <div className="mt-4 text-center">
         <p className="text-gray-600">
           Já tem uma conta? <a href="/" className="text-blue-500 hover:underline">Faça login aqui</a>

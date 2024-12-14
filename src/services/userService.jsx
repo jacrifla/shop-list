@@ -15,19 +15,19 @@ export const getAllUsers = async () => {
   }
 };
 
-export const getUserByEmail = async (email) => {
+export const getUserByEmail = async (email) => {  
     try {
       const response = await fetch(`${API_BASE_URL}/email`, {
-        method: 'POST', // Usando POST para enviar dados no body
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email }), // Passando o email no body
+        body: JSON.stringify({ email }), 
       });
   
       if (!response.ok) {
         throw new Error('Erro ao buscar usuário por email');
-      }
+      }   
   
       return await response.json();
     } catch (error) {
