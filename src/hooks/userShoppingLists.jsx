@@ -14,10 +14,7 @@ const useShoppingLists = (userId) => {
           // Buscar as listas criadas pelo usuário
           const createdListsResponse = await getListByUserId(userId);
           // Buscar as listas compartilhadas com o usuário
-          const sharedListsResponse = await getListWithPermission(userId);
-  
-          console.log('Created Lists:', createdListsResponse.data);
-          console.log('Shared Lists:', sharedListsResponse.data);
+          const sharedListsResponse = await getListWithPermission(userId);          
   
           // Combinar as duas listas, sem duplicação
           const combinedLists = [
@@ -29,8 +26,7 @@ const useShoppingLists = (userId) => {
                 )
             ),
           ];
-  
-          console.log('Combined Lists:', combinedLists);
+
           setLists(combinedLists);
         } catch (error) {
           console.error('Erro ao buscar listas de compras:', error);

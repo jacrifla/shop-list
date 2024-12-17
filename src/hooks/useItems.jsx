@@ -20,7 +20,7 @@ const useItems = (selectedListId) => {
     fetchItems();
   }, [selectedListId]);
 
-  return items;
+  return { items, setItems }; // Retorna os itens e a função para atualizá-los
 };
 
 export default useItems;

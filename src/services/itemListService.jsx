@@ -29,14 +29,14 @@ export async function createItemList(itemData) {
     }
 }
 
-export async function toggleCheck(itemId, newCheStatus) {
+export async function toggleCheck(itemId, newCheckedStatus) {
     try {
         const response = await fetch(`${API_BASE_URL}/toggle-check`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ itemId, checked: newCheStatus }),
+            body: JSON.stringify({ itemId, checked: newCheckedStatus }),
         })
 
         if (!response.ok) {

@@ -9,25 +9,30 @@ import useItems from '../hooks/useItems';
 import { createShoppingList, deleteShoppingList } from '../services/shoppingListService';
 import { toast } from 'react-toastify';
 import { createShareTokenWithUser } from '../services/shareTokenService';
+import { formatTitleCase } from '../utils/function';
 
 function Home() {
   const [selectedListId, setSelectedListId] = useState(null);
   const [newListName, setNewListName] = useState('');
   const { userId } = useAuth();
 
-  const { lists, addList, setLists } = useShoppingLists(userId);
-  const items = useItems(selectedListId);
+  const { lists, addList, setLists } = useShoppingLists(parseInt(userId));
+  const { items, setItems } = useItems(selectedListId);
+  
+  // Estado para controlar a visibilidade do Sidebar em dispositivos móveis
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleCreateList = async () => {
     if (userId && newListName.trim() !== '') {
       try {
-        const newList = { userId, nameList: newListName.trim() };
+        const formattedName = formatTitleCase(newListName.trim());
+        const newList = { userId, name: formattedName };
         console.log('Criando nova lista:', newList);
         const response = await createShoppingList(newList);
         console.log('Resposta da criação da lista:', response);
         if (response && response.data) {
           addList(response.data);
-          console.log('Estado das listas após adição:', lists); // Verifique aqui
+          console.log('Estado das listas após adição:', lists);
           setNewListName('');
           toast.success('Lista criada com sucesso!');
         }
@@ -68,19 +73,38 @@ function Home() {
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
-      <div className='flex flex-1'>
-        <Sidebar selectedListId={selectedListId} items={items} />
-        <main className='flex-1 bg-gray-50 p-6'>
-          <h2 className='text-2xl font-bold mb-4'>Minhas Listas de Compras</h2>
+      <div className="flex flex-col lg:flex-row flex-1">
+        {/* Botão de abrir o sidebar em telas pequenas */}
+        <button
+          className="lg:hidden p-4 bg-gray-800 text-white"
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+        >
+          {isSidebarOpen ? 'Fechar Menu' : 'Abrir Menu'}
+        </button>
+
+        {/* Sidebar com controle de visibilidade */}
+        <div className={`lg:block ${isSidebarOpen ? 'block' : 'hidden'} lg:col-span-1`}>
+          <Sidebar
+            selectedListId={selectedListId}
+            items={items}
+            setItems={setItems}
+          />
+        </div>
+
+        {/* Principal área de conteúdo */}
+        <main className="flex-1 bg-gray-50 p-6">
+          <h2 className="text-2xl font-bold mb-4">Minhas Listas de Compras</h2>
           <CreateList
             newListName={newListName}
             setNewListName={setNewListName}
             handleCreateList={handleCreateList}
           />
+          
+          {/* Exibição das listas */}
           {lists.length === 0 ? (
             <p>Nenhuma lista encontrada.</p>
           ) : (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {lists.map((list) => (
                 <List
                   key={list.id}
@@ -93,6 +117,15 @@ function Home() {
             </div>
           )}
         </main>
+
+        {/* Sidebar exibido abaixo da área de listas (quando aberto) */}
+        <div className={`lg:hidden ${isSidebarOpen ? 'block' : 'hidden'} p-6`}>
+          <Sidebar
+            selectedListId={selectedListId}
+            items={items}
+            setItems={setItems}
+          />
+        </div>
       </div>
     </div>
   );

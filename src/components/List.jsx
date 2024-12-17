@@ -49,25 +49,29 @@ function List({ list, onClick, onShare, onDelete }) {
         <h3 className='font-semibold text-lg'>{list.name}</h3>
       </div>
 
-      <button
-        className='text-blue-500 hover:text-blue-700 transition'
-        onClick={(e) => {
-          e.stopPropagation();
-          setShowShareModal(true);
-        }}
-      >
-        <i className='fas fa-share-alt'></i>
-      </button>
+      <div className='flex flex-col items-start ml-4'>
+        {/* Botão de Compartilhar (apenas ícone) */}
+        <button
+          className='text-blue-500 hover:text-blue-700 transition mb-2'
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowShareModal(true);
+          }}
+        >
+          <i className='fas fa-share-alt'></i>
+        </button>
 
-      <button
-        className='text-red-500 hover:text-red-700 transition'
-        onClick={(e) => {
-          e.stopPropagation();
-          confirmDelete();
-        }}
-      >
-        <i className='fas fa-trash-alt'></i>
-      </button>
+        {/* Botão de Excluir (apenas ícone) */}
+        <button
+          className='text-red-500 hover:text-red-700 transition'
+          onClick={(e) => {
+            e.stopPropagation();
+            confirmDelete();
+          }}
+        >
+          <i className='fas fa-trash-alt'></i>
+        </button>
+      </div>
 
       {deleteError && <div className='text-red-500 font-semibold mt-2'>{deleteError}</div>}
 

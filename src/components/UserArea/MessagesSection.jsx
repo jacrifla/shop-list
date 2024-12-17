@@ -1,13 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 function MessagesSection({ tokens, onApproval, isLoading }) {
   const [selectedToken, setSelectedToken] = useState("");
   const [isTokenProcessed, setIsTokenProcessed] = useState(false);
 
-  const handleApproval = (token, approvalStatus) => {  
+  const handleApproval = (token, approvalStatus) => {
     onApproval(token, approvalStatus);
     setIsTokenProcessed(true);
   };
+
+  useEffect(() => {
+    // Resetar o estado de 'selectedToken' se o token for processado.
+    if (isTokenProcessed) {
+      setSelectedToken("");  // Limpa a seleção após processamento
+    }
+  }, [isTokenProcessed]);
 
   if (isLoading) {
     return <p className="text-gray-500">Carregando tokens...</p>;
@@ -21,7 +28,7 @@ function MessagesSection({ tokens, onApproval, isLoading }) {
           Selecione um token de compartilhamento:
         </label>
 
-        {/* Se o token foi processado, não mostra o select */}
+        {/* Se não houver tokens, exibe mensagem */}
         {tokens.length === 0 ? (
           <p className="text-gray-500">Não há tokens pendentes no momento.</p>
         ) : (
@@ -31,6 +38,7 @@ function MessagesSection({ tokens, onApproval, isLoading }) {
                 className="w-full p-2 border border-gray-300 rounded mb-4"
                 onChange={(e) => setSelectedToken(e.target.value)}
                 value={selectedToken}
+                disabled={isTokenProcessed} // Desabilita o select após o processamento
               >
                 <option value="">Escolha um token</option>
                 {tokens.map((token) => (

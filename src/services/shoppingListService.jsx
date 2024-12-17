@@ -38,10 +38,12 @@ export async function getListByUserId(userId) {
 export const getListWithPermission = async (userId) => {
   try {
     const response = await fetch(`${API_URL}/list-permission/${userId}`);
+    
     if (!response.ok) {
       throw new Error('Erro ao buscar listas com permissão');
     }
-    const data = await response.json();
+
+    const data = await response.json();    
     return data;
   } catch (error) {
     console.error('Erro ao buscar listas com permissão:', error);
