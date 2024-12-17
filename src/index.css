@@ -15,3 +15,21 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@keyframes pulse {
+  0% {
+    opacity: 0.7;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0.7;
+  }
+}
+
+.loading-text {
+  animation: pulse 1.5s infinite;
+  font-size: 1.2rem;
+  color: #6b7280; /* Cor do texto, pode ajustar conforme necessário */
+}

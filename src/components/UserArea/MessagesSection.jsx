@@ -19,11 +19,14 @@ function MessagesSection({ tokens, onApproval, isLoading }) {
     <div className="flex-1 ml-4">
       <h3 className="text-2xl font-semibold mb-4">Mensagens</h3>
       {isLoading ? (
-        <div className="min-h-[200px] flex items-center justify-center">
-          <p className="text-gray-500">Carregando tokens...</p>
+        <div className="min-h-[300px] flex items-center justify-center">
+          <div className="flex items-center justify-center space-x-2 opacity-80">
+            <div className="w-3 h-3 border-4 border-t-transparent border-blue-500 rounded-full animate-spin"></div>
+            <p className="text-gray-500 opacity-80 animate-fadeIn">Carregando tokens...</p>
+          </div>
         </div>
       ) : (
-        <div className="bg-gray-50 p-4 border border-gray-200 rounded shadow-sm">
+        <div className="bg-gray-50 p-4 border border-gray-200 rounded shadow-sm min-h-[300px]">
           <label className="block mb-2">Selecione um token de compartilhamento:</label>
 
           {/* Se não houver tokens, exibe mensagem */}
