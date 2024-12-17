@@ -11,6 +11,7 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const [redirecting, setRedirecting] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
   const { login: authenticateUser } = useAuth();
@@ -69,6 +70,8 @@ function LoginForm() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Digite sua senha"
+          showPassword={showPassword}
+          togglePassword={() => setShowPassword(!showPassword)}
         />
         <SubmitButton loading={loading}>Login</SubmitButton>
       </form>

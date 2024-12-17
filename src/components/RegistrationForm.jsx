@@ -13,7 +13,8 @@ function RegistrationForm() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
@@ -63,31 +64,39 @@ function RegistrationForm() {
         </div>
       )}
       <InputField
+        label="Nome"
         type="text"
-        placeholder="Nome"
         value={name}
         onChange={(e) => setName(formatTitleCase(e.target.value))}
+        placeholder="Nome"
         required
       />
       <InputField
+        label="Email"
         type="email"
-        placeholder="Email"
         value={email}
         onChange={(e) => setEmail(e.target.value.toLowerCase())}
+        placeholder="Email"
         required
       />
       <InputField
+        label="Senha"
         type="password"
-        placeholder="Senha"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
+        placeholder="Digite sua senha"
+        showPassword={showPassword}
+        togglePassword={() => setShowPassword(!showPassword)}
         required
       />
       <InputField
+        label="Confirmar Senha"
         type="password"
-        placeholder="Confirmar Senha"
         value={confirmPassword}
         onChange={(e) => setConfirmPassword(e.target.value)}
+        placeholder="Confirmar senha"
+        showPassword={showConfirmPassword}
+        togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
         required
       />
       <SubmitButton loading={loading}>Cadastrar</SubmitButton>

@@ -1,22 +1,26 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { resetPassword } from "../services/userService";
 import { useNavigate } from "react-router-dom";
+import InputField from './InputField';
+import SubmitButton from './SubmitButton';
 
 function PasswordRecoveryForm() {
   const [email, setEmail] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState('');
-  const [success, setSucess] = useState('');
+  const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    setSucess('');
+    setSuccess('');
 
-    if (newPassword!== confirmPassword) {
+    if (newPassword !== confirmPassword) {
       setError('As senhas não coincidem');
       return;
     }
@@ -27,7 +31,7 @@ function PasswordRecoveryForm() {
       const response = await resetPassword(email, newPassword);
             
       if (response.success) {
-        setSucess(response.message);
+        setSuccess(response.message);
         setEmail('');
         setNewPassword('');
         setConfirmPassword('');
@@ -40,7 +44,7 @@ function PasswordRecoveryForm() {
     } finally {
       setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="p-8 bg-white rounded-lg shadow-lg">
@@ -55,46 +59,34 @@ function PasswordRecoveryForm() {
         </div>
       )}
       <form onSubmit={handleSubmit}>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">Email</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Digite seu email"
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">Nova Senha</label>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(e) => setNewPassword(e.target.value)}
-            placeholder="Digite sua nova senha"
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <div className="mb-6">
-          <label className="block text-gray-700 font-semibold mb-2">Confirmar Nova Senha</label>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            placeholder="Confirme sua nova senha"
-            className="w-full p-3 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-            required
-          />
-        </div>
-        <button
-          type="submit"
-          className="w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition duration-300"
-          disabled={loading}
-        >
-          {loading ? 'Carregando...' : 'Recuperar Senha'}
-        </button>
+        <InputField
+          label="Email"
+          type="email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          placeholder="Digite seu email"
+        />
+        <InputField
+          label="Nova Senha"
+          type="password"
+          value={newPassword}
+          onChange={(e) => setNewPassword(e.target.value)}
+          placeholder="Digite sua nova senha"
+          showPassword={showNewPassword}
+          togglePassword={() => setShowNewPassword(!showNewPassword)}
+        />
+        <InputField
+          label="Confirmar Nova Senha"
+          type="password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          placeholder="Confirme sua nova senha"
+          showPassword={showConfirmPassword}
+          togglePassword={() => setShowConfirmPassword(!showConfirmPassword)}
+        />
+        <SubmitButton loading={loading}>
+          Recuperar Senha
+        </SubmitButton>
       </form>
     </div>
   );
