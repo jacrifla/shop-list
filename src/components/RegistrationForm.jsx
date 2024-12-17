@@ -3,6 +3,7 @@ import { createUser } from "../services/userService";
 import { useNavigate } from "react-router-dom";
 import InputField from './InputField';
 import SubmitButton from './SubmitButton';
+import { formatTitleCase } from '../utils/function';
 
 function RegistrationForm() {
   const [name, setName] = useState('');
@@ -65,14 +66,14 @@ function RegistrationForm() {
         type="text"
         placeholder="Nome"
         value={name}
-        onChange={(e) => setName(e.target.value)}
+        onChange={(e) => setName(formatTitleCase(e.target.value))}
         required
       />
       <InputField
         type="email"
         placeholder="Email"
         value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => setEmail(e.target.value.toLowerCase())}
         required
       />
       <InputField
