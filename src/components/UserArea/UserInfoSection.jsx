@@ -3,19 +3,22 @@ import { getUserById, updateUser } from '../../services/userService';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
-function UserInfoSection({userId, isAuthenticated}) {
+function UserInfoSection({ userId, isAuthenticated }) {
 
   const navigate = useNavigate();
-  const [userInfo, setUserInfo] = useState({name: '', email: ''});
+  const [userInfo, setUserInfo] = useState({ name: '', email: '' });
 
   useEffect(() => {
     if (isAuthenticated && userId) {
-      
       const fetchUserData = async () => {
         try {
           const userData = await getUserById(userId);
-          
-          setUserInfo({ name: userData.data.name, email: userData.data.email });
+          console.log(userData.data[0].name);
+
+          setUserInfo({
+            name: userData.data[0].name,
+            email: userData.data[0].email
+          });
         } catch (error) {
           console.error('Erro ao carregar informações do usuário:', error);
         }
@@ -29,10 +32,10 @@ function UserInfoSection({userId, isAuthenticated}) {
 
   const handleSaveChanges = async () => {
     try {
-      // Chama a função de atualização do usuário com os valores do state
+      // Verificar se o nome ou email foi alterado. Se não, passa o valor atual.
       const updatedUser = await updateUser(userInfo.name, userInfo.email, userId);
       if (updatedUser) {
-        toast.success('Atualizado com sucesso!')  
+        toast.success('Atualizado com sucesso!');
       }
     } catch (error) {
       console.error(error);
@@ -53,7 +56,6 @@ function UserInfoSection({userId, isAuthenticated}) {
           value={userInfo.name}
           onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          readOnly
         />
       </div>
       <div className="mb-4">
@@ -63,18 +65,17 @@ function UserInfoSection({userId, isAuthenticated}) {
           value={userInfo.email}
           onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
           className="w-full p-2 border border-gray-300 rounded focus:outline-none focus:border-blue-500"
-          readOnly
         />
       </div>
 
       {/* Botões de salvar alterações e alterar senha */}
-      <button 
+      <button
         className="w-full mt-4 bg-green-500 text-white py-2 rounded hover:bg-green-600 transition duration-300"
         onClick={handleSaveChanges}
       >
         Salvar Alterações
       </button>
-      <button 
+      <button
         className="w-full mt-4 bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-300"
         onClick={handleChangePassword}
       >

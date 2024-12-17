@@ -43,10 +43,15 @@ function List({ list, onClick, onShare, onDelete }) {
 
   if (isDeleted) return null;
 
+  // Formatando a data
+  const formattedDate = new Date(list.created_at).toLocaleDateString();
+
   return (
     <div className='bg-white shadow p-4 rounded hover:shadow-md cursor-pointer transition flex items-center justify-between'>
       <div onClick={onClick}>
         <h3 className='font-semibold text-lg'>{list.name}</h3>
+        {/* Exibe a data da criação */}
+        <p className='text-sm text-gray-500'>Criado em: {formattedDate}</p>
       </div>
 
       <div className='flex flex-col items-start ml-4'>
