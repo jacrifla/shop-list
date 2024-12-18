@@ -65,4 +65,30 @@ export async function getItemsByList(listId) {
       return []; // Retorna um array vazio em caso de erro
     }
 }
-  
+
+export async function updateItem(itemId, updates) {
+    try {
+        const response = await fetch(`${API_BASE_URL}/update/${itemId}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(updates),
+        });
+
+        // Verifica se a resposta HTTP indica sucesso
+        if (!response.ok) {
+            const errorData = await response.json();
+            console.error('Erro no servidor:', errorData);
+            throw new Error(`Erro ao atualizar item: ${response.status} ${response.statusText}`);
+        }
+
+        // Processa a resposta caso o status HTTP esteja OK
+        const data = await response.json();
+        console.log('Item atualizado com sucesso: ', data);
+        return data;
+    } catch (error) {
+        console.error('Erro na atualização do item:', error.message);
+        throw error;
+    }
+}

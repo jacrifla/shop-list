@@ -81,6 +81,7 @@ function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
           <ListItem
             items={items}
             onCheckboxChange={handleCheckboxChange}
+            setItems={setItems}
           />
         </div>
       )}
