@@ -58,7 +58,7 @@ function List({ list, onClick, onShare, onDelete }) {
       <div onClick={onClick} className="flex flex-col">
         <h3 className="font-semibold text-lg">{list.name}</h3>
         {/* Exibe a data da criação */}
-        <p className="text-sm text-gray-500">Criado em: {formatDate(list.creationDate)}</p>
+        <p className="text-sm text-gray-500">Criado em: {formatDate(list.created_at)}</p>
       </div>
 
       <div className="flex flex-col items-start ml-4">
