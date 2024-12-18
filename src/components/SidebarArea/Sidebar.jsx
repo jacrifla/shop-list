@@ -5,7 +5,7 @@ import AddItemForm from './AddItemForm';
 import { toast } from 'react-toastify';
 import { formatTitleCase } from '../../utils/function';
 
-function Sidebar({ selectedListId, items, setItems }) {
+function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
   const [newItem, setNewItem] = useState({
     name: '',
     quantity: '',
@@ -38,7 +38,6 @@ function Sidebar({ selectedListId, items, setItems }) {
         toast.success('Item adicionado com sucesso!');
       }
     } catch (error) {
-      console.error('Erro ao adicionar item:', error);
       toast.error('Erro ao adicionar o item. Tente novamente.');
     }
   }
@@ -52,12 +51,19 @@ function Sidebar({ selectedListId, items, setItems }) {
         )
       );
     } catch (error) {
-      console.error('Erro ao atualizar o status do item:', error);
+      toast.error('Erro ao atualizar o status do item.');
     }
   };
 
   return (
     <aside className="w-80 bg-gray-200 p-6 shadow-lg rounded-lg flex flex-col min-h-screen">
+      <button
+        className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200 mb-4"
+        onClick={toggleSidebar} // Chama a função toggleSidebar para fechar o sidebar
+      >
+        Fechar
+      </button>
+
       <button
         className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600 transition duration-200 mb-4"
         onClick={() => setIsAddingItem((prev) => !prev)}

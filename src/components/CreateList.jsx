@@ -1,17 +1,17 @@
 import React from 'react';
 
 const CreateList = ({ newListName, setNewListName, handleCreateList }) => (
-  <div className="flex mb-4">
+  <div className='flex flex-col md:flex-row mb-4 gap-2'>
     <input
-      type="text"
+      type='text'
       value={newListName}
       onChange={(e) => setNewListName(e.target.value)}
-      placeholder="Digite o nome da nova lista"
-      className="border border-gray-300 p-2 rounded mr-2"
+      placeholder='Digite o nome da nova lista'
+      className='w-full md:w-2/3 border border-gray-300 p-2 rounded'
     />
     <button
       onClick={handleCreateList}
-      className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      className='w-full md:w-1/3 bg-gray-700 text-white px-4 py-2 rounded hover:bg-blue-950 transition duration-200'
     >
       Adicionar Lista
     </button>

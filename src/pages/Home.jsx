@@ -14,43 +14,42 @@ import { formatTitleCase } from '../utils/function';
 function Home() {
   const [selectedListId, setSelectedListId] = useState(null);
   const [newListName, setNewListName] = useState('');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const { userId } = useAuth();
 
   const { lists, addList, setLists } = useShoppingLists(parseInt(userId));
   const { items, setItems } = useItems(selectedListId);
-  
-  // Estado para controlar a visibilidade do Sidebar em dispositivos móveis
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const handleCreateList = async () => {
     if (userId && newListName.trim() !== '') {
-      try {
-        const formattedName = formatTitleCase(newListName.trim());
-        const newList = { userId, name: formattedName };
-        console.log('Criando nova lista:', newList);
-        const response = await createShoppingList(newList);
-        console.log('Resposta da criação da lista:', response);
-        if (response && response.data) {
-          addList(response.data);
-          console.log('Estado das listas após adição:', lists);
-          setNewListName('');
-          toast.success('Lista criada com sucesso!');
+        try {
+            const formattedName = formatTitleCase(newListName.trim());
+            const newList = { userId, name: formattedName };
+
+            const response = await createShoppingList(newList);
+            if (response && response.data) {
+                // Adiciona a data de criação da lista
+                addList({
+                    ...response.data,
+                    creationDate: response.data.creationDate ? new Date(response.data.creationDate) : new Date(),
+                });
+                setNewListName('');
+                toast.success('Lista criada com sucesso!');
+            }
+        } catch (error) {
+            console.error('Erro ao criar a lista:', error);
+            toast.error('Erro ao criar a lista. Tente novamente.');
         }
-      } catch (error) {
-        console.error('Erro ao criar a lista:', error);
-        toast.error('Erro ao criar a lista. Tente novamente.');
-      }
     } else {
-      toast.error('O nome da lista não pode estar vazio.');
+        toast.error('O nome da lista não pode estar vazio.');
     }
-  };
+};
 
   const handleShareList = async (listId, email) => {
     try {
       await createShareTokenWithUser(listId, email);
       toast.success('Lista compartilhada com sucesso!');
     } catch (error) {
-      console.error('Erro ao compartilhar a lista:', error);
       toast.error('Erro ao compartilhar a lista.');
     }
   };
@@ -59,10 +58,7 @@ function Home() {
     try {
       const response = await deleteShoppingList(listId);
       if (response) {
-        setLists((prevLists) => {
-          const updatedLists = prevLists.filter((list) => list.id !== listId);
-          return updatedLists;
-        });
+        setLists((prevLists) => prevLists.filter((list) => list.id !== listId));
         toast.success('Lista excluída com sucesso!');
       }
     } catch (error) {
@@ -70,29 +66,30 @@ function Home() {
     }
   };
 
+  const toggleSidebar = () => {
+    setIsSidebarOpen((prev) => !prev); // Alterna a visibilidade do sidebar
+  };
+
   return (
     <div className='flex flex-col min-h-screen'>
       <Header />
-      <div className="flex flex-col lg:flex-row flex-1">
-        {/* Botão de abrir o sidebar em telas pequenas */}
-        <button
-          className="lg:hidden p-4 bg-gray-800 text-white"
-          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-        >
-          {isSidebarOpen ? 'Fechar Menu' : 'Abrir Menu'}
-        </button>
-
-        {/* Sidebar com controle de visibilidade */}
-        <div className={`lg:block ${isSidebarOpen ? 'block' : 'hidden'} lg:col-span-1`}>
-          <Sidebar
-            selectedListId={selectedListId}
-            items={items}
-            setItems={setItems}
-          />
-        </div>
+      <div className="flex flex-1 relative">
+        {/* Sidebar no modo overlay em telas pequenas e médias */}
+        {isSidebarOpen && (
+          <div className="fixed inset-0 bg-gray-800 bg-opacity-50 z-10 sm:w-3/4 md:w-1/2 lg:w-1/4 p-4">
+            <div className="bg-white shadow-lg rounded-lg w-full h-full">
+              <Sidebar
+                selectedListId={selectedListId}
+                items={items}
+                setItems={setItems}
+                toggleSidebar={toggleSidebar} // Passando a função toggleSidebar como prop
+              />
+            </div>
+          </div>
+        )}
 
         {/* Principal área de conteúdo */}
-        <main className="flex-1 bg-gray-50 p-6">
+        <main className={`flex-1 bg-gray-50 p-6 lg:ml-6 ${isSidebarOpen ? 'opacity-50' : ''}`}>
           <h2 className="text-2xl font-bold mb-4">Minhas Listas de Compras</h2>
           <CreateList
             newListName={newListName}
@@ -106,26 +103,21 @@ function Home() {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {lists.map((list) => (
-                <List
-                  key={list.id}
-                  list={list}
-                  onClick={() => setSelectedListId(list.id)}
-                  onShare={handleShareList}
-                  onDelete={handleDeleteList}
-                />
+                <div key={list.id}>
+                  <List
+                    list={list}
+                    onClick={() => {
+                      setSelectedListId(list.id);
+                      toggleSidebar(); // Abre o sidebar ao clicar na lista
+                    }}
+                    onShare={handleShareList}
+                    onDelete={handleDeleteList}
+                  />
+                </div>
               ))}
             </div>
           )}
         </main>
-
-        {/* Sidebar exibido abaixo da área de listas (quando aberto) */}
-        <div className={`lg:hidden ${isSidebarOpen ? 'block' : 'hidden'} p-6`}>
-          <Sidebar
-            selectedListId={selectedListId}
-            items={items}
-            setItems={setItems}
-          />
-        </div>
       </div>
     </div>
   );
