@@ -1,10 +1,10 @@
 import { BASE_URL } from "../utils/base";
 
-const API_BASE_URL = `${BASE_URL}/item-list`
+const API_URL = `${BASE_URL}/item-list`
 
 export async function createItemList(itemData) {
     try {
-        const response = await fetch(`${API_BASE_URL}/create`, {
+        const response = await fetch(`${API_URL}/create`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -31,7 +31,7 @@ export async function createItemList(itemData) {
 
 export async function toggleCheck(itemId, newCheckedStatus) {
     try {
-        const response = await fetch(`${API_BASE_URL}/toggle-check`, {
+        const response = await fetch(`${API_URL}/toggle-check`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -53,7 +53,7 @@ export async function toggleCheck(itemId, newCheckedStatus) {
 
 export async function getItemsByList(listId) {
     try {
-      const response = await fetch(`${API_BASE_URL}/items/${listId}`);
+      const response = await fetch(`${API_URL}/items/${listId}`);
       if (!response.ok) {
         throw new Error('Erro ao buscar os itens da lista');
       }
@@ -68,7 +68,7 @@ export async function getItemsByList(listId) {
 
 export async function updateItem(itemId, updates) {
     try {
-        const response = await fetch(`${API_BASE_URL}/update/${itemId}`, {
+        const response = await fetch(`${API_URL}/update/${itemId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -92,3 +92,22 @@ export async function updateItem(itemId, updates) {
         throw error;
     }
 }
+
+export const deleteListWithItems  = async (listId) => {
+    try {
+      const response = await fetch(`${API_URL}/delete-with-items/${listId}`, {
+        method: 'DELETE',
+      });
+      if (!response.ok) {
+        throw new Error('Erro ao deletar lista e itens');
+      }
+      const data = await response.json();
+      console.log('ItemListService: ', data);
+      console.log(data.message);
+      return true;
+    } catch (error) {
+      console.error('Erro ao excluir a lista e os itens:', error);
+      throw error;
+    }
+  };
+  

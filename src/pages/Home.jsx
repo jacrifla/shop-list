@@ -30,8 +30,7 @@ function Home() {
             if (response && response.data) {
                 // Adiciona a data de criação da lista
                 addList({
-                    ...response.data,
-                    creationDate: response.data.creationDate ? new Date(response.data.creationDate) : new Date(),
+                    ...response.data
                 });
                 setNewListName('');
                 toast.success('Lista criada com sucesso!');
