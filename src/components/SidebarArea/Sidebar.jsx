@@ -8,14 +8,14 @@ import { formatTitleCase } from '../../utils/function';
 function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
   const [newItem, setNewItem] = useState({
     name: '',
-    quantity: '',
     observation: '',
+    category_id: '',
   });
   const [isAddingItem, setIsAddingItem] = useState(false);
 
-  async function handleAddItem() {
-    if (!newItem.name.trim() || !newItem.quantity.trim()) {
-      toast.error('O nome e a quantidade do item são obrigatórios.');
+  async function handleAddItem(category_id) {
+    if (!newItem.name.trim()) {
+      toast.error('O nome do item é obrigatório.');
       return;
     }
     if (!selectedListId) {
@@ -27,13 +27,13 @@ function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
       const itemData = {
         listId: selectedListId,
         name: formatTitleCase(newItem.name.trim()),
-        quantity: parseInt(newItem.quantity, 10),
         observation: newItem.observation.trim(),
+        category_id,
       };
       const response = await createItemList(itemData);
       if (response && response.data) {
         setItems((prevItems) => [...prevItems, response.data]);
-        setNewItem({ name: '', quantity: '', observation: '' });
+        setNewItem({ name: '', observation: '', category_id: '' });
         setIsAddingItem(false);
         toast.success('Item adicionado com sucesso!');
       }
@@ -59,7 +59,7 @@ function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
     <aside className="w-80 bg-gray-200 p-6 shadow-lg rounded-lg flex flex-col min-h-screen">
       <button
         className="w-full bg-red-500 text-white py-2 rounded hover:bg-red-600 transition duration-200 mb-4"
-        onClick={toggleSidebar} // Chama a função toggleSidebar para fechar o sidebar
+        onClick={toggleSidebar}
       >
         Fechar
       </button>
@@ -72,12 +72,16 @@ function Sidebar({ selectedListId, items, setItems, toggleSidebar }) {
       </button>
 
       {isAddingItem && (
-        <AddItemForm newItem={newItem} setNewItem={setNewItem} handleAddItem={handleAddItem} />
+        <AddItemForm
+          newItem={newItem}
+          setNewItem={setNewItem}
+          handleAddItem={handleAddItem}
+        />
       )}
 
       {selectedListId && (
-        <div className="mt-4 flex-grow">
-          <h3 className="font-semibold text-xl text-gray-700 mb-4">Itens</h3>
+        <div className="overflow-y-auto max-h-[calc(100vh-220px)] pr-2 flex-1">
+          <h3 className="font-semibold text-xl text-gray-700">Itens</h3>
           <ListItem
             items={items}
             onCheckboxChange={handleCheckboxChange}

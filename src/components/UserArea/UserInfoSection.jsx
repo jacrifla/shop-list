@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 function UserInfoSection({ userId, isAuthenticated }) {
-
   const navigate = useNavigate();
   const [userInfo, setUserInfo] = useState({ name: '', email: '' });
 
@@ -13,12 +12,16 @@ function UserInfoSection({ userId, isAuthenticated }) {
       const fetchUserData = async () => {
         try {
           const userData = await getUserById(userId);
-          console.log(userData.data[0].name);
 
-          setUserInfo({
-            name: userData.data[0].name,
-            email: userData.data[0].email
-          });
+          if (userData && userData.data) {
+
+            setUserInfo({
+              name: userData.data.name,
+              email: userData.data.email,
+            });
+          } else {
+            console.error('Nenhum dado de usuário encontrado.');
+          }
         } catch (error) {
           console.error('Erro ao carregar informações do usuário:', error);
         }
@@ -33,7 +36,11 @@ function UserInfoSection({ userId, isAuthenticated }) {
   const handleSaveChanges = async () => {
     try {
       // Verificar se o nome ou email foi alterado. Se não, passa o valor atual.
-      const updatedUser = await updateUser(userInfo.name, userInfo.email, userId);
+      const updatedUser = await updateUser(
+        userInfo.name,
+        userInfo.email,
+        userId
+      );
       if (updatedUser) {
         toast.success('Atualizado com sucesso!');
       }

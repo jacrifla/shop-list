@@ -33,3 +33,15 @@ code {
   font-size: 1.2rem;
   color: #6b7280; /* Cor do texto, pode ajustar conforme necessário */
 }
+
+/* Remove as setinhas nos navegadores baseados em WebKit (Chrome, Safari, etc.) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove as setinhas no Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
