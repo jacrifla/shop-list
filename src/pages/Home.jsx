@@ -6,15 +6,20 @@ import CreateList from '../components/CreateList';
 import { useAuth } from '../context/AuthContext';
 import useShoppingLists from '../hooks/userShoppingLists';
 import useItems from '../hooks/useItems';
-import { createShoppingList, deleteShoppingList } from '../services/shoppingListService';
+import {
+  createShoppingList,
+  deleteShoppingList,
+} from '../services/shoppingListService';
 import { toast } from 'react-toastify';
 import { createShareTokenWithUser } from '../services/shareTokenService';
 import { formatTitleCase } from '../utils/function';
+import PriceMetrics from '../components/PriceMetrics'; // Importe o componente de métricas de preço
 
 function Home() {
   const [selectedListId, setSelectedListId] = useState(null);
   const [newListName, setNewListName] = useState('');
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [showPriceMetrics, setShowPriceMetrics] = useState(false); // Controle da exibição das métricas
   const { userId } = useAuth();
 
   const { lists, addList, setLists } = useShoppingLists(parseInt(userId));
@@ -22,27 +27,27 @@ function Home() {
 
   const handleCreateList = async () => {
     if (userId && newListName.trim() !== '') {
-        try {
-            const formattedName = formatTitleCase(newListName.trim());
-            const newList = { userId, name: formattedName };
+      try {
+        const formattedName = formatTitleCase(newListName.trim());
+        const newList = { userId, name: formattedName };
 
-            const response = await createShoppingList(newList);
-            if (response && response.data) {
-                // Adiciona a data de criação da lista
-                addList({
-                    ...response.data
-                });
-                setNewListName('');
-                toast.success('Lista criada com sucesso!');
-            }
-        } catch (error) {
-            console.error('Erro ao criar a lista:', error);
-            toast.error('Erro ao criar a lista. Tente novamente.');
+        const response = await createShoppingList(newList);
+        if (response && response.data) {
+          // Adiciona a data de criação da lista
+          addList({
+            ...response.data,
+          });
+          setNewListName('');
+          toast.success('Lista criada com sucesso!');
         }
+      } catch (error) {
+        console.error('Erro ao criar a lista:', error);
+        toast.error('Erro ao criar a lista. Tente novamente.');
+      }
     } else {
-        toast.error('O nome da lista não pode estar vazio.');
+      toast.error('O nome da lista não pode estar vazio.');
     }
-};
+  };
 
   const handleShareList = async (listId, email) => {
     try {
@@ -69,8 +74,13 @@ function Home() {
     setIsSidebarOpen((prev) => !prev); // Alterna a visibilidade do sidebar
   };
 
+  // Função para alternar a exibição das métricas de preço
+  const handleShowMetrics = () => {
+    setShowPriceMetrics(!showPriceMetrics); // Alterna a visibilidade das métricas
+  };
+
   return (
-    <div className='flex flex-col min-h-screen'>
+    <div className="flex flex-col min-h-screen">
       <Header />
       <div className="flex flex-1 relative">
         {/* Sidebar no modo overlay em telas pequenas e médias */}
@@ -88,14 +98,18 @@ function Home() {
         )}
 
         {/* Principal área de conteúdo */}
-        <main className={`flex-1 bg-gray-50 p-6 lg:ml-6 ${isSidebarOpen ? 'opacity-50' : ''}`}>
+        <main
+          className={`flex-1 bg-gray-50 p-6 lg:ml-6 ${
+            isSidebarOpen ? 'opacity-50' : ''
+          }`}
+        >
           <h2 className="text-2xl font-bold mb-4">Minhas Listas de Compras</h2>
           <CreateList
             newListName={newListName}
             setNewListName={setNewListName}
             handleCreateList={handleCreateList}
           />
-          
+
           {/* Exibição das listas */}
           {lists.length === 0 ? (
             <p>Nenhuma lista encontrada.</p>
@@ -116,6 +130,17 @@ function Home() {
               ))}
             </div>
           )}
+
+          {/* Botão para exibir as métricas de preço */}
+          <button
+            onClick={handleShowMetrics}
+            className="mt-4 p-2 bg-blue-500 text-white rounded"
+          >
+            {showPriceMetrics ? 'Esconder Métricas' : 'Mostrar Métricas'}
+          </button>
+
+          {/* Exibindo as métricas de preço */}
+          {showPriceMetrics && <PriceMetrics />}
         </main>
       </div>
     </div>

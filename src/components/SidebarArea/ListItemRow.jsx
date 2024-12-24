@@ -26,8 +26,7 @@ function ListItemRow({ item, onCheckboxChange, setItems, categories }) {
   const handleAddPriceHistory = async (itemId, priceHistoryData) => {
     if (
       !priceHistoryData.price ||
-      !priceHistoryData.quantity ||
-      !priceHistoryData.barcode
+      !priceHistoryData.quantity
     ) {
       console.error(
         'Erro: Todos os campos de preço, quantidade e código de barras são obrigatórios.'
@@ -116,7 +115,7 @@ function ListItemRow({ item, onCheckboxChange, setItems, categories }) {
           {' '}
           {/* Centraliza o botão */}
           <button
-            className="bg-blue-500 text-white hover:text-green-700 p-2 rounded"
+            className="bg-gray-500 text-white hover:text-gray-700 p-2 rounded"
             onClick={() => setIsAddingPriceHistory(true)}
           >
             Adicionar Preço
