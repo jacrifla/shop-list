@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { fetchCategories, createCategory } from "../../services/categoriesService";
+import { createCategory, fetchCategories } from "../../services/categoriesService";
 import { toast } from "react-toastify";
-import CategorySelector from "./CategorySelector";
 import NewItemForm from "./NewItemForm";
 
 function AddItemForm({ newItem, setNewItem, handleAddItem }) {
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState("");
 
   useEffect(() => {
     const loadCategories = async () => {
@@ -32,16 +30,13 @@ function AddItemForm({ newItem, setNewItem, handleAddItem }) {
 
   return (
     <div className="mb-4">
+      {/* Passando a função handleCreateCategory para o NewItemForm */}
       <NewItemForm
         newItem={newItem}
         setNewItem={setNewItem}
         handleAddItem={handleAddItem}
-        selectedCategory={selectedCategory}
-      />
-      <CategorySelector
         categories={categories}
-        onCreateCategory={handleCreateCategory}
-        onCategoryChange={setSelectedCategory}
+        handleCreateCategory={handleCreateCategory} // Passando a função aqui
       />
     </div>
   );

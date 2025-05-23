@@ -29,6 +29,20 @@ export async function createItemList(itemData) {
   }
 }
 
+export async function fetchItems() {
+  try {
+    const response = await fetch(`${API_URL}/all`);
+    if (!response.ok) {
+      throw new Error('Erro ao buscar todos os itens');
+    }
+    const data = await response.json();
+    return data.data || [];
+  } catch (error) {
+    console.error(error);
+    return [];
+  }
+}
+
 export async function getItemsByList(listId) {
   try {
     const response = await fetch(`${API_URL}/all-by-list/${listId}`);

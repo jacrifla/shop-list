@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import ItemPriceHistory from './ItemPriceHistory';
 import EditItemForm from './EditItemForm';
 import { createItemPriceHistory } from '../../services/itemPriceHistoryService';
+import { updateItem } from '../../services/itemListService';
+import { toast } from 'react-toastify';
 
 function ListItemRow({ item, onCheckboxChange, setItems, categories }) {
   const [isEditing, setIsEditing] = useState(false);
@@ -11,17 +13,29 @@ function ListItemRow({ item, onCheckboxChange, setItems, categories }) {
     setIsEditing(true);
   };
 
-  const handleSaveItem = (updatedItem) => {
-    if (!updatedItem || !updatedItem.id) {
-      console.error('Item atualizado inválido:', updatedItem);
-      return;
-    }
+const handleSaveItem = async (updatedItem) => {
+  if (!updatedItem || !updatedItem.id) {
+    console.error('Item atualizado inválido:', updatedItem);
+    return;
+  }
 
+  try {
+    // Chama a função de atualização do item
+    const updatedItemFromDb = await updateItem(updatedItem.id, updatedItem); // Use o ID e o item atualizado
+
+    // Se a atualização for bem-sucedida, atualize o estado local
     setItems((prevItems) =>
-      prevItems.map((i) => (i.id === updatedItem.id ? updatedItem : i))
+      prevItems.map((i) => (i.id === updatedItemFromDb.id ? updatedItemFromDb : i))
     );
-    setIsEditing(false);
-  };
+    setIsEditing(false); // Fechar o formulário de edição
+
+    toast.success('Item atualizado com sucesso!');
+  } catch (error) {
+    console.error('Erro ao atualizar o item:', error);
+    toast.error('Erro ao atualizar o item.');
+  }
+};
+
 
   const handleAddPriceHistory = async (itemId, priceHistoryData) => {
     if (

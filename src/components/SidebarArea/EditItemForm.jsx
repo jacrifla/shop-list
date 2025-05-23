@@ -15,7 +15,6 @@ function EditItemForm({ item, categories, onCancel, onSave }) {
     setSelectedCategory(item.category_id);
   }, [item]);
 
-
   useEffect(() => {
     const loadCategories = async () => {
       const result = await fetchCategories();
@@ -29,11 +28,21 @@ function EditItemForm({ item, categories, onCancel, onSave }) {
   }, []);
 
   const handleSave = () => {
+    // Adicionar log para verificação
+    console.log("Salvando item:", editedItem);
+    
     if (!selectedCategory) {
       toast.error("Você precisa selecionar uma categoria.");
       return;
     }
+
+    // Atualiza o editedItem com a categoria selecionada
     const updatedItem = { ...editedItem, category_id: selectedCategory };
+
+    // Adicionando log para garantir que o item foi atualizado
+    console.log("Item atualizado:", updatedItem);
+
+    // Chama a função onSave passando o item atualizado
     onSave(updatedItem);
   };
 
